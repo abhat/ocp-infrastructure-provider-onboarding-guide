@@ -164,7 +164,7 @@
 <h3 id="network-ingress">Network Ingress</h3>
 <h4 id="ensure-the-cloud-provider-implementation-has-support-for-load-balancers">Ensure the cloud provider implementation has support for load balancers</h4>
 <p>If OpenShift should manage load balancers for this platform, provide load balancer
-integration in the <a href="https://github.com/openshift/cluster-ingress-operator/pkg/operator/controller/ingress/load_balancer_service.go">load balancer service</a></p>
+integration in the <a href="https://github.com/openshift/cluster-ingress-operator/blob/master/pkg/operator/controller/ingress/load_balancer_service.go">load balancer service</a></p>
 <p>For example:
 - add provider-specific annotations to <code>InternalLBAnnotations</code> and <code>managedLoadBalancerServiceAnnotations</code>
 - evaluate customizations needed for load balancer service configuration in <code>desiredLoadBalancerService</code>
@@ -177,7 +177,7 @@ and make customizations, or skip the tests for this provider if they don't apply
 - check if you require <code>TestInternalLoadBalancer</code>, <code>TestIngressControllerCustomEndpoints</code>, <code>TestLocalWithFallbackOverrideForLoadBalancerService</code> for your platform
 - add unit tests to catch regressions</p>
 <h4 id="evaluate-provider-specific-endpoint-publishing-strategy">Evaluate provider-specific endpoint publishing strategy</h4>
-<p>Look through the doc at the <a href="https://github.com/openshift/cluster-ingress-operator/manifests/00-custom-resource-definition.yaml">custom resource definition</a>
+<p>Look through the doc at the <a href="https://github.com/openshift/cluster-ingress-operator/blob/master/manifests/00-custom-resource-definition.yaml">custom resource definition</a>
 to understand the details for <code>endpointPublishingStrategy</code>, which is the set of parameters
 used to publish the ingress controller endpoints to other networks, enable load
 balancer integrations, and other tasks.</p>
@@ -191,7 +191,7 @@ balancer integrations, and other tasks.</p>
 <h4 id="document-the-default-endpoint-publishing-strategy-for-the-provider">Document the default endpoint publishing strategy for the provider</h4>
 <h3 id="dns">DNS</h3>
 <h4 id="evaluate-provider-specific-dns-support-and-validate-the-controller">Evaluate provider-specific DNS support and validate the controller</h4>
-<p>Check if customizations are needed in the <a href="https://github.com/openshift/cluster-ingress-operator/pkg/operator/controller/dns/controller.go">DNS operator</a></p>
+<p>Check if customizations are needed in the <a href="https://github.com/openshift/cluster-ingress-operator/blob/master/pkg/operator/controller/dns/controller.go">DNS operator</a></p>
 <p>For example:
 - add your platform type to <code>createDNSProvider</code>, and <code>createDNSProviderIfNeeded</code>
 - add unit tests to catch regressions</p>
