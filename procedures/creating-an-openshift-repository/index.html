@@ -150,23 +150,28 @@ repository in the <a href="https://github.com/openshift">OpenShift organization<
 is where all the code that becomes part of an OpenShift release lives. To
 accomplish creating a new repository, a Red Hat representative will need to make a
 Jira request on the internal <code>DPP Board</code>.</p>
-<p>For infrastructure implementors:
-1. Contact your Red Hat representative about creating a new repository.
-1. Have the name, description, and license information for the new repository
-    ready to share.
-1. If you would like to have the repository forked from an existing repository
-    let your contact know this at the beginning of the process.</p>
-<p>For Red Hat representatives:
-1. Create a new Jira Request on the <code>DPP Board</code>, the following is an example
-    request for the GCP CCM:
-    <code>Repository name: cloud-provider-gcp
-    Description: Kubernetes Cloud Controller Manager for Google Cloud Platform
-    Programming Language (for .gitignore - optional): go
-    License: Apache License 2.0
-    Public repo: Public
-    Who needs write access: OpenShift Team Cloud(https://github.com/orgs/openshift/teams/openshift-team-cloud)
-    Read access: Everybody
-    Additional info: Please fork https://github.com/kubernetes/cloud-provider-gcp there.</code></p>
+<p>For infrastructure implementors:</p>
+<ol>
+<li>Contact your Red Hat representative about creating a new repository.</li>
+<li>Have the name, description, and license information for the new repository
+    ready to share.</li>
+<li>If you would like to have the repository forked from an existing repository
+    let your contact know this at the beginning of the process.</li>
+</ol>
+<p>For Red Hat representatives:</p>
+<ol>
+<li>Create a new Jira Request on the <code>DPP Board</code>, the following is an example
+   request for the GCP CCM:</li>
+</ol>
+<pre><code class="language-yaml">Repository name: cloud-provider-gcp
+Description: Kubernetes Cloud Controller Manager for Google Cloud Platform
+Programming Language (for .gitignore - optional): go
+License: Apache License 2.0
+Public repo: Public
+Who needs write access: OpenShift Team Cloud(https://github.com/orgs/openshift/teams/openshift-team-cloud)
+Read access: Everybody
+Additional info: Please fork https://github.com/kubernetes/cloud-provider-gcp there.
+</code></pre>
               
             </div>
           </div>
