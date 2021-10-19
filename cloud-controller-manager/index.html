@@ -78,6 +78,20 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Cloud Controller Manager</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#add-the-ccm-repository-to-openshift">Add the CCM repository to OpenShift</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#configure-basic-repository-integrations">Configure basic repository integrations</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#integrating-with-other-openshift-components">Integrating with other OpenShift components</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#openshiftapi">openshift/api</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#openshiftlibrary-go">openshift/library-go</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#openshiftcluster-cloud-controller-manager-operator">openshift/cluster-cloud-controller-manager-operator</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                     </li>
                 </ul>
@@ -147,7 +161,86 @@
             <div class="section">
               
                 <h1 id="cloud-controller-manager">Cloud Controller Manager</h1>
-<p>TODO</p>
+<p>This document describes the necessary changes that must be made to add a new
+<a href="https://kubernetes.io/docs/concepts/architecture/cloud-controller/">Cloud Controller Manager (CCM)</a>
+to OpenShift. It does not cover the details of writing a CCM, for information
+about implementing the controller please see the official Kubernetes documentation
+on <a href="https://kubernetes.io/docs/tasks/administer-cluster/developing-cloud-controller-manager/">Developing Cloud Controller Manager</a>
+as a starting point.</p>
+<h2 id="add-the-ccm-repository-to-openshift">Add the CCM repository to OpenShift</h2>
+<p>One of the first things to do is copy the source code into the OpenShift organization
+on GitHub. This process is described in more detail in the
+<a href="../procedures/creating-an-openshift-repository">Creating a GitHub Repository in the OpenShift Organization</a>
+document.</p>
+<p>Having the source code in the OpenShift organization will allow Red Hat's continuous
+integration tooling access to it for running tests, building images, and including in
+the official releases.</p>
+<h2 id="configure-basic-repository-integrations">Configure basic repository integrations</h2>
+<p>After the repository is copied to the OpenShift organization, there are a few basic
+continuous integration tasks that should be configured. The most important of these
+initially are the job to permit automated merging through
+<a href="https://github.com/kubernetes/test-infra/tree/master/prow/tide">Tide</a>
+and the job to create container images on commits.</p>
+<p>OpenShift uses <a href="https://github.com/kubernetes/test-infra/tree/master/prow">Prow</a> for
+continuous integration testing much like the Kubernetes community does. The configurations
+are contained in the <a href="https://github.com/openshift/release">openshift/release</a>
+repository. This is where pull requests will need to be made to enable integrations
+for the new CCM.</p>
+<p>For a deeper understanding of the OpenShift continuous integration tooling, the
+<a href="https://docs.ci.openshift.org/">OpenShift CI Docs</a> are the authoritative source.
+In specific for this initial task, the
+<a href="https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#bootstrapping-configuration-for-a-new-repository">Bootstrapping Configuration for a new Repository</a> should be used as a guide.</p>
+<p>As an example, here is the pull request to add the CCM for Alibaba Cloud to the
+OpenShift Prow. It configures the Tide mechanics as well as a pre-submit job to
+check the Go language formatting and a post-submit job to build the container images.</p>
+<ul>
+<li><a href="https://github.com/openshift/release/pull/19947">openshift/release #19947</a></li>
+</ul>
+<h2 id="integrating-with-other-openshift-components">Integrating with other OpenShift components</h2>
+<p>In OpenShift there are several operators which work together to ensure that the CCM
+is properly configured and also that new nodes which join the cluster are similarly
+configured for the infrastructure provider. To ensure that the new CCM and provider
+are properly recognized by all components there are several repositories which must
+be modified.</p>
+<h3 id="openshiftapi">openshift/api</h3>
+<p>Before progressing with the OpenShift integrations, the new infrastructure provider
+will need to be present in the OpenShift API as part of the <code>infrastructure.config.openshift.io</code>
+definition.</p>
+<p><em><strong>TODO: add link to installer doc step that describes updating openshift/api</strong></em></p>
+<h3 id="openshiftlibrary-go">openshift/library-go</h3>
+<p>In order for the new infrastructure provider to be recognized by the Cluster
+Cloud Controller Manager Operator, and other operators, the
+<a href="https://github.com/openshift/library-go">OpenShift library-go project</a> must be updated
+so that the <code>IsCloudProviderExternal</code> function returns the proper response.</p>
+<p>As an example, here is the pull request to update the <code>IsCloudProviderExternal</code> function
+to add support for IBM Cloud.</p>
+<ul>
+<li><a href="https://github.com/openshift/library-go/pull/1161">openshift/library-go #1161</a></li>
+</ul>
+<p>It is important to note that any changes to library-go must be vendored into the projects
+which are dependent upon library-go. This process can often involve several repositories
+that must be updated before all the components will work together. To make tracking
+these changes easier, an issue can be used to monitor the individual changes. For example,
+this is an issue which tracked changes for the GCP and vSphere updates:</p>
+<ul>
+<li><a href="https://github.com/openshift/cluster-cloud-controller-manager-operator/issues/135">openshift/cluster-cloud-controller-manager-operator #135</a></li>
+</ul>
+<h3 id="openshiftcluster-cloud-controller-manager-operator">openshift/cluster-cloud-controller-manager-operator</h3>
+<p>OpenShift uses the <a href="https://github.com/openshift/cluster-cloud-controller-manager-operator">Cluster Cloud Controller Manager Operator</a>(CCCMO)
+to manage the deployment and maintenance of the CCMs. This operator will deploy
+the individual containers of the CCM and ensure their health and continued
+operation during the cluster lifecycle.</p>
+<p>Adding a new infrastructure provider will require creating a package within the
+CCCMO that will contain the code for deploying the new components as well as the
+templated manifests for them.</p>
+<p>As an example, here are two pull requests that added the IBM Cloud CCM to the
+CCCMO. The first pull request adds the primary code changes and manifests for deployment.
+The second pull request adds the CCM image references for the CCCMO to utilize
+when deploying from an OpenShift release payload.</p>
+<ul>
+<li><a href="https://github.com/openshift/cluster-cloud-controller-manager-operator/pull/97">openshift/cluster-cloud-controller-manager-operator #97</a></li>
+<li><a href="https://github.com/openshift/cluster-cloud-controller-manager-operator/pull/105">openshift/cluster-cloud-controller-manager-operator #105</a></li>
+</ul>
               
             </div>
           </div>
