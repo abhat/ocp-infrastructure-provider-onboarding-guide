@@ -171,8 +171,11 @@
                 <h1 id="network-ingress-and-dns">Network Ingress and DNS</h1>
 <h3 id="network-ingress">Network Ingress</h3>
 <h4 id="ensure-the-cloud-provider-implementation-has-support-for-load-balancers">Ensure the cloud provider implementation has support for load balancers</h4>
-<p>If OpenShift should manage load balancers for this platform, provide load balancer
-integration in the <a href="https://github.com/openshift/cluster-ingress-operator/blob/master/pkg/operator/controller/ingress/load_balancer_service.go">load balancer service</a></p>
+<p>If OpenShift should manage load balancers for this platform, the cloud provider
+needs to implement <a href="https://github.com/kubernetes/kubernetes/blob/4ce435cc95959c3cf24e3ecb38c14b7071f8ec58/staging/src/k8s.io/cloud-provider/cloud.go#L117-L162">the <code>cloudprovider.LoadBalancer</code>
+interface</a>.  Then the ingress operator
+needs to be updated to configure a <a href="https://github.com/openshift/cluster-ingress-operator/blob/master/pkg/operator/controller/ingress/load_balancer_service.go">load balancer
+service</a> on this platform.</p>
 <p>For example:
 - add provider-specific annotations to <code>InternalLBAnnotations</code> and <code>managedLoadBalancerServiceAnnotations</code>
 - evaluate customizations needed for load balancer service configuration in <code>desiredLoadBalancerService</code>
@@ -199,8 +202,9 @@ balancer integrations, and other tasks.</p>
 <h4 id="document-the-default-endpoint-publishing-strategy-for-the-provider">Document the default endpoint publishing strategy for the provider</h4>
 <h3 id="dns">DNS</h3>
 <h4 id="evaluate-provider-specific-dns-support-and-validate-the-controller">Evaluate provider-specific DNS support and validate the controller</h4>
-<p>Check if customizations are needed in the <a href="https://github.com/openshift/cluster-ingress-operator/blob/master/pkg/operator/controller/dns/controller.go">DNS operator</a></p>
+<p>Check if customizations are needed in <a href="https://github.com/openshift/cluster-ingress-operator/blob/master/pkg/operator/controller/dns/controller.go">the ingress operator's DNS controller</a>.</p>
 <p>For example:
+- define a new <a href="https://github.com/openshift/cluster-ingress-operator/tree/master/pkg/dns">DNS provider</a>
 - add your platform type to <code>createDNSProvider</code>, and <code>createDNSProviderIfNeeded</code>
 - add unit tests to catch regressions</p>
 <h4 id="evaluate-provider-specific-externaldns-support-410">Evaluate provider-specific externalDNS support (4.10+)</h4>
