@@ -70,6 +70,16 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">RHCOS</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#file-a-ticket-for-new-platform-support">File a ticket for new platform support</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#support-for-building-and-publishing-disk-images">Support for building and publishing disk images</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#ignition-support">Ignition support</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#afterburn-support">Afterburn support</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#questions">Questions</a>
+    </li>
     </ul>
                     </li>
                 </ul>
@@ -146,8 +156,40 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="rhcos">RHCOS</h1>
-<p>TODO</p>
+                <h1 id="rhcos-platform-support">RHCOS Platform Support</h1>
+<p>To support a new platform one of the main requirements is to have Red Hat Enterprise Linux CoreOS (RHCOS) operating system work on the platform for provisioning the machines. This <a href="https://docs.fedoraproject.org/en-US/fedora-coreos/getting-started/">getting started guide</a> gives a good overview of the Fedora CoreOS (FCOS) operating system and way to provision machines on different platforms. The process of building RHCOS and FCOS is largely the same except for the packages contained inside of the OS itself (RHEL vs Fedora).</p>
+<h2 id="file-a-ticket-for-new-platform-support">File a ticket for new platform support</h2>
+<p>Please make sure to file a ticket against <a href="https://github.com/coreos/fedora-coreos-tracker.git">Fedora-CoreOS-Tracker</a> by filing a new issue and choosing the <a href="https://github.com/coreos/fedora-coreos-tracker/issues/new/choose">Request a new platform</a> option.
+Some important questions to be thought about/answered in the platform request tracker are:</p>
+<ul>
+<li>The official name of the platform - the name by which Ignition will identify the platform. Note that this can be different from the platform name used by the Openshift APIs</li>
+<li>How is userdata provided - this refers to how <a href="https://github.com/coreos/ignition">Ignition</a> configuration is provided for this platform.</li>
+<li>How is the hostname provided - the method through which the machine gets its hostname. this could be through dhcp or a service like <a href="https://github.com/coreos/afterburn">afterburn</a></li>
+<li>How is network configuration provided - the method through which network is configured - through DHCP or static ips provided in the metadata which can be accessed through services like afterburn</li>
+<li>How are ssh keys provided</li>
+<li>Details of the VM image which is to be built and published - this includes things like APIs to upload VM images, the disk format specification, etc..</li>
+</ul>
+<p>Any new platform being added should first support FCOS (Fedora CoreOS) making sure that once the platform is fully supported that there are regular upstream CI jobs run to test FCOS and publish FCOS images.</p>
+<h2 id="support-for-building-and-publishing-disk-images">Support for building and publishing disk images</h2>
+<p>If you are looking into building and publishing new disk images, you need to start with looking at the <a href="https://github.com/coreos/coreos-assembler#readme">coreos-assembler</a> tool. The coreos-assembler is a collection of tools inside a containerized build environment which is used to build and publish FCOS and RHCOS images. Some useful links on how to develop and use the coreos assembler:</p>
+<ul>
+<li><a href="https://github.com/coreos/coreos-assembler/blob/main/docs/working.md">Working with CoreOS Assembler guide</a></li>
+<li><a href="https://github.com/coreos/coreos-assembler/blob/main/docs/building-fcos.md">Building Fedora CoreOS</a></li>
+<li><a href="https://github.com/coreos/coreos-assembler/blob/main/docs/devel.md">Working on CoreOS Assembler guide</a></li>
+<li><a href="https://github.com/coreos/coreos-assembler/blob/main/docs/design.md">CoreOS Assembler Design</a></li>
+</ul>
+<p>In addition, there are tools that help you test your image locally and also help you upload your images to the cloud. <a href="https://github.com/coreos/coreos-assembler/tree/main/mantle#mantle-gluing-container-linux-together">Mantle</a> inside the coreos-assembler has a bunch of tools which help with different things:</p>
+<ul>
+<li>kola - for launching instances and running tests</li>
+<li>kolet - an agent for kola that runs on instances</li>
+<li>ore - for interfacing with cloud providers</li>
+</ul>
+<h2 id="ignition-support">Ignition support</h2>
+<p><a href="https://github.com/coreos/ignition#ignition">Ignition</a> is a utility that configures the machine. A list of supported platforms and how they provide the configuration to Ignition is listed <a href="https://github.com/coreos/ignition/blob/main/docs/supported-platforms.md">here</a>. Whenever a new platform is added, corresponding code must be added to specify the way to <a href="https://github.com/coreos/ignition/tree/main/internal/providers">fetch configuration</a> for the platform.</p>
+<h2 id="afterburn-support">Afterburn support</h2>
+<p><a href="https://github.com/coreos/afterburn">Afterburn</a> is used to implement cloud provider specific functionality by interacting with its metadata endpoints. It can be used to optionally set things like hostname and also inject network kernel command line arguments. In addition, it is also used to retrieve attributes from the metadata. Once added, some of this functionality can be enabled as systemd units in the Machine Config Operator.</p>
+<h2 id="questions">Questions</h2>
+<p>Questions can be directed to these various <a href="https://github.com/coreos/fedora-coreos-tracker#communication-channels-for-fedora-coreos">communication channels for Fedora CoreOS</a></p>
               
             </div>
           </div>
