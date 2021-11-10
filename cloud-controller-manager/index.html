@@ -232,7 +232,10 @@ the individual containers of the CCM and ensure their health and continued
 operation during the cluster lifecycle.</p>
 <p>Adding a new infrastructure provider will require creating a package within the
 CCCMO that will contain the code for deploying the new components as well as the
-templated manifests for them.</p>
+templated manifests for them. For a deeper discussion of integrating with the
+CCCMO, please see the
+<a href="https://github.com/openshift/cluster-cloud-controller-manager-operator/blob/master/docs/dev/cloud-provider-integration.md">developer documenation</a>
+from that repository.</p>
 <p>As an example, here are two pull requests that added the IBM Cloud CCM to the
 CCCMO. The first pull request adds the primary code changes and manifests for deployment.
 The second pull request adds the CCM image references for the CCCMO to utilize
