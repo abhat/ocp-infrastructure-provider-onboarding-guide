@@ -9,7 +9,7 @@
   
   
   <link rel="shortcut icon" href="../../img/favicon.ico">
-  <title>Creating a GitHub Repository in the OpenShift Organization - OpenShift Infrastructure Provider Onboarding Guide</title>
+  <title>Configuring Basic Repository Integrations - OpenShift Infrastructure Provider Onboarding Guide</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
 
   <link rel="stylesheet" href="../../css/theme.css" />
@@ -18,8 +18,8 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Creating a GitHub Repository in the OpenShift Organization";
-    var mkdocs_page_input_path = "procedures/creating-an-openshift-repository.md";
+    var mkdocs_page_name = "Configuring Basic Repository Integrations";
+    var mkdocs_page_input_path = "procedures/configuring-repository-integrations.md";
     var mkdocs_page_url = null;
   </script>
   
@@ -132,7 +132,7 @@
     
       
     
-    <li>Creating a GitHub Repository in the OpenShift Organization</li>
+    <li>Configuring Basic Repository Integrations</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -144,24 +144,18 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="creating-a-github-repository-in-the-openshift-organization">Creating a GitHub Repository in the OpenShift Organization</h1>
-<p>A common task when adding a new component to OpenShift is creating a GitHub
-repository in the <a href="https://github.com/openshift">OpenShift organization</a>. This
-is where all the code that becomes part of an OpenShift release lives. To
-accomplish creating a new repository, a Red Hat representative will need to make a
-Jira request on the internal <code>DPP Board</code>.</p>
-<p>For infrastructure implementors:</p>
-<ol>
-<li>Contact your Red Hat representative about creating a new repository.</li>
-<li>Have the name, description, and license information for the new repository
-    ready to share.</li>
-<li>If you would like to have the repository forked from an existing repository
-    let your contact know this at the beginning of the process.</li>
-</ol>
-<p>For Red Hat representatives:</p>
-<ol>
-<li>See this internal documentation, <a href="https://source.redhat.com/groups/public/atomicopenshift/atomicopenshift_wiki/how_to_request_a_new_openshift_github_repository">How to Request a new OpenShift GitHub Repository</a></li>
-</ol>
+                <h1 id="configuring-basic-repository-integrations">Configuring Basic Repository Integrations</h1>
+<p>After the repository is copied to the OpenShift organization, there are a few basic
+continuous integration tasks that should be configured. The most important of these
+initially are the job to permit automated merging through <a href="https://github.com/kubernetes/test-infra/tree/master/prow/tide">Tide</a>
+and the job to create container images on commits.</p>
+<p>OpenShift uses <a href="https://github.com/kubernetes/test-infra/tree/master/prow">Prow</a> for continuous integration testing much like the Kubernetes community does.
+The configurations are contained in the <a href="https://github.com/openshift/release">openshift/release</a>
+repository. This is where pull requests will need to be made to enable integrations
+for the new CCM.</p>
+<p>For a deeper understanding of the OpenShift continuous integration tooling, the
+<a href="https://docs.ci.openshift.org/">OpenShift CI Docs</a> are the authoritative source.  In specific for this initial task, the
+<a href="https://docs.ci.openshift.org/docs/how-tos/onboarding-a-new-component/#bootstrapping-configuration-for-a-new-repository">Bootstrapping Configuration for a new Repository</a> should be used as a guide.</p>
               
             </div>
           </div>
