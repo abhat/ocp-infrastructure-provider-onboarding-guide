@@ -102,6 +102,10 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Documentation</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#repository-level-documentation">Repository level documentation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#product-level-documentation">Product level documentation</a>
+    </li>
     </ul>
                     </li>
                 </ul>
@@ -147,7 +151,37 @@
             <div class="section">
               
                 <h1 id="documentation">Documentation</h1>
-<p>TODO</p>
+<p>All OpenShift components that are released from Red Hat will have accompanying
+documentation in the <a href="https://docs.openshift.com">OpenShift product documentation</a>. The content
+for these product documents are created and maintained by Red Hat, but they
+are inspired by the <a href="../openshift-enhancement">OpenShift enhancement</a>,
+repository level documentation, and direct discussions with the component
+engineers.</p>
+<h2 id="repository-level-documentation">Repository level documentation</h2>
+<p>Any component that has its code in a Git repository must have
+documentation in that repository to cover its usage and troubleshooting. This
+repository level documentation forms the basis of the product documentation
+and also helps OpenShift users to have a deeper understanding the software they
+are deploying and running. This documentation should be written by the authors
+of the software component.</p>
+<p><strong>Examples of Respository Level Documentation</strong></p>
+<ul>
+<li>
+<p>Machine API Operator, the <a href="https://github.com/openshift/machine-api-operator/tree/master/docs">documenation directory</a> contains several documents
+  structured by intended audience and topic.</p>
+</li>
+<li>
+<p>Alibaba Machine API Actuator, the <a href="https://github.com/openshift/cluster-api-provider-alibaba/blob/main/README.md">README file</a> contains detailed information
+  about deployment and usage.</p>
+</li>
+</ul>
+<h2 id="product-level-documentation">Product level documentation</h2>
+<p>As mentioned above, all components in OpenShift will have product documentation
+created by Red Hat content teams. This documentation is inspired by the repository
+level content, and direct communication with the engineers who are creating and
+maintaining the software. During the development of new infrastructure components
+it is expected that Red Hat content writers will have access to the repository
+level documentation and to the original authors of the components in question.</p>
               
             </div>
           </div>
