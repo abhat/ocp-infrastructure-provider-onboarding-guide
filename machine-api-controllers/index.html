@@ -228,7 +228,7 @@ the validating and mutating webhooks for Machine resources.</p>
   to the Machine in the process.</li>
 <li>MachineHealthCheck controller - manages MachineHealthCheck resources. Ensure Machines being
   targeted by MachineHealthCheck objects are satisfying healthiness criteria or are remediated otherwise.
-  For more information about MachineHealthChecks, please see the OpenShift <a href="ttps://docs.openshift.com/container-platform/latest/machine_management/deploying-machine-health-checks.html">Deploying machine health checks</a>
+  For more information about MachineHealthChecks, please see the OpenShift <a href="https://docs.openshift.com/container-platform/latest/machine_management/deploying-machine-health-checks.html">Deploying machine health checks</a>
   documentation.</li>
 <li>NodeLink controller - ensure Machines have a nodeRef based on <code>providerID</code> matching. Annotate
   nodes with a label containing the Machine name.</li>
@@ -260,17 +260,24 @@ allows each infrastructure provider to have a different set of variables to use 
 new Machines.</p>
 <p>While the MachineSet and Machine objects will not need to change to accomodate new infrastructure
 providers, the ProviderSpec will need to be created specifically for each new provider.  For example
-here are the ProviderSpecs for AWS and IBM Cloud:</p>
+here are the ProviderSpecs for Alibaba Cloud and IBM Cloud:</p>
 <ul>
-<li><a href="https://github.com/openshift/api/blob/master/machine/v1beta1/types_awsprovider.go">ProviderSpec defined for AWS</a></li>
+<li><a href="https://github.com/openshift/api/blob/master/machine/v1/types_alibabaprovider.go">ProviderSpec defined for Alibaba Cloud</a></li>
 <li><a href="https://github.com/openshift/cluster-api-provider-ibmcloud/blob/release-4.10/pkg/apis/ibmcloudprovider/v1beta1/ibmcloudproviderconfig_types.go#L30">ProviderSpec defined for IBM Cloud</a></li>
 </ul>
-<p>In general, the ProviderSpec should be defined within the repository for the new infrastructure
-provider (akin to the IBM Cloud example). Although ProviderSpecs might be migrated into
-the <a href="https://github.com/openshift/api">openshift/api</a> to consilidate API types in the future, it is expected that
-new providers will begin by developing their ProviderSpec within the code repository for their
-actuator. Starting with the ProviderSpec in the same repository as the actuator will promote
-faster initial development.</p>
+<p>When creating a new ProviderSpec it is natural to begin development with the API type defined
+within the repository for the new component (akin to the IBM Cloud example). Before final
+release the ProviderSpec API code should be moved to the <a href="https://github.com/openshift/api">openshift/api</a> repository
+(similar to the Alibaba Cloud example). All new ProviderSpecs will be at API version <code>v1</code>.
+The rationale for adding these types to the API repository is that it makes it easier to
+re-vendor those API types into other projects, and it promotes a more thorough API review
+process. Keep in mind that when adding changes to the API repository, all dependent
+repositories (for example installer) will need to be re-vendored after the API changes have
+merged. The following pull request is an example of how to integrate a new ProviderSpec into the
+API repository:</p>
+<ul>
+<li><a href="https://github.com/openshift/api/pull/1045">Machine API: adding Alibaba cloud provider types #1045</a></li>
+</ul>
 <h3 id="machine-controllers-and-actuators">Machine Controllers and Actuators</h3>
 <p>As noted above, the Machine controller manages Machine resources. The Machine controller is also
 the interface between the MAO, the Machine API CRDs, and the infrastructure provider. The
