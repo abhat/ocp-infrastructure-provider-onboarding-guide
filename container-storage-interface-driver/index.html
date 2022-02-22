@@ -210,7 +210,7 @@
 <ul>
 <li>Install one CSI driver, the most useful for the platform. Usually it’s one that provides block volumes (AWS EBS, GCP PD, Azure Disk, OpenStack Cinder, ...).</li>
 <li>Provide <em>one</em> default StorageClass that is good for a generic usage. Not too expensive, but not too slow either.</li>
-<li>Each cluster is different, don’t anticipate application needs and leave creation of additional StorageClasses to the cluster administrators. They know better what they need.</li>
+<li>Each cluster is different, don’t anticipate application needs, leave creation of additional StorageClasses to the cluster administrators. They know better what they need.</li>
 <li>If the platform provides more storage backends, provide CSI drivers for them via OLM. This is out of scope of this guide, but library-go can be used for it too, see <a href="https://github.com/openshift/aws-efs-csi-driver-operator">AWS EFS CSI driver operator</a>. It even supports un-installation of the CSI driver.</li>
 </ul>
 <h2 id="overview">Overview</h2>
@@ -267,7 +267,7 @@ During cluster installation, following things happen:</p>
 <p>If possible, make the CSI driver working without metrics and add them later. They’re tricky to set up correctly. In general, follow GCP PD CSI driver operator example how the metric ports are exposed in the Pods and how their scraping is configured in <a href="https://github.com/openshift/gcp-pd-csi-driver-operator/blob/master/assets/servicemonitor.yaml">ServiceMonitor CR</a>.</p>
 <p>OpenShift shall handle TLS side of things, i.e. it will provide <a href="https://github.com/openshift/gcp-pd-csi-driver-operator/blob/223a251c3ba39d8af605258d14794b32a5cfafda/assets/service.yaml#L5">a Secret with TLS key</a> that can be used in <a href="https://github.com/openshift/gcp-pd-csi-driver-operator/blob/223a251c3ba39d8af605258d14794b32a5cfafda/assets/controller.yaml#L114-L115"><code>kube-rbac-proxy</code> sidecars</a> using <a href="https://github.com/openshift/gcp-pd-csi-driver-operator/blob/223a251c3ba39d8af605258d14794b32a5cfafda/assets/controller.yaml#L127-L129">Secret volumes</a>. </p>
 <h3 id="ci">CI</h3>
-<p>If you do not do so yet, test your CSi driver in vanilla Kubernetes frequently using <a href="https://github.com/kubernetes/kubernetes/tree/master/test/e2e/storage/external">Kubernetes storage tests</a>. No OpenShift nor operator is needed here and all your Kubernetes customers will benefit from it.</p>
+<p>If you do not do so yet, test your CSI driver in vanilla Kubernetes frequently using <a href="https://github.com/kubernetes/kubernetes/tree/master/test/e2e/storage/external">Kubernetes storage tests</a>. Neither OpenShift or an operator is needed here and all your Kubernetes customers will benefit from it.</p>
 <p>OpenShift packages the same tests as openshift-test binary / <a href="https://quay.io/repository/openshift/origin-tests">container image</a>. The binary just wraps the tests with proper OpenShift privileges, but otherwise they're the same tests as upstream and consume the same <code>manifest.yaml</code> file. To run the tests:</p>
 <ol>
 <li>Place <code>manifest.yaml</code> and <code>kubeconfig</code> in a single directory, e.g.  <code>data/</code></li>
@@ -278,13 +278,13 @@ During cluster installation, following things happen:</p>
 <h2 id="deliverables">Deliverables</h2>
 <h3 id="csi-driver">CSI driver</h3>
 <p>Fork the CSI driver under <code>github.com/openshift</code> and integrate it with Prow and Tide as described <a href="../procedures">elsewhere in this guide</a>.</p>
-<p>Make sure that the CSI driver image is built in our CI.</p>
+<p>Make sure that the CSI driver image is built in Red Hat's CI.</p>
 <h3 id="openshiftapi-changes">openshift/api changes</h3>
 <p>Add your CSI driver name to allowed <code>ClusterCSIDriver</code> names <a href="https://github.com/openshift/api/blob/b632c5fc10c0ea86cb18577db9388109a43d465f/operator/v1/types_csi_cluster_driver.go#L44-L57">here</a> and <a href="https://github.com/openshift/api/blob/master/operator/v1/0000_90_cluster_csi_driver_01_config.crd.yaml-patch">here</a>. You must update <code>cluster-storage-operator</code> to the new <code>openshift/api</code> version to get the <code>ClusterCSIDriver</code> CRD updated during cluster installation / update. A simple <code>go get -u github.com/openshift/api@master</code> is enough.</p>
 <h3 id="csi-driver-operator">CSI driver operator</h3>
 <p>The CSI driver must be installed via an operator and the operator must be based on library-go. As listed above, it has a lot of knowledge about OpenShift. <strong>You cannot use an operator previously developed in-house and using OLM!</strong></p>
 <ul>
-<li>Ask your Red Hat to create a new empty repo in <code>gihub.com/openshift</code>. Take <a href="https://github.com/openshift/gcp-pd-csi-driver-operator">the GCP PD CSI driver operator</a> as a base and copy it there. Replace traces of "GCP PD" and "gcp-pd" in the whole repo with your CSI driver name. If you're lucky, you may be done!</li>
+<li>Ask your Red Hat representative to create a new empty repo in <code>gihub.com/openshift</code>. Take <a href="https://github.com/openshift/gcp-pd-csi-driver-operator">the GCP PD CSI driver operator</a> as a base and copy it there. Replace traces of "GCP PD" and "gcp-pd" in the whole repo with your CSI driver name. If you're lucky, you may be done!</li>
 <li>The only useful code is in <a href="https://github.com/openshift/gcp-pd-csi-driver-operator/blob/master/pkg/operator/starter.go"><code>pkg/operator/starter.go</code></a> and it basically only instantiates + starts CSI driver controllers from library-go.</li>
 <li>The most important thing is the <a href="https://github.com/openshift/gcp-pd-csi-driver-operator/tree/master/assets"><code>assets/</code> directory</a>. It contains YAML files of all objects that the CSI driver needs.</li>
 <li>Check <code>${}</code> "variables" in the files there - the operator will replace e.g. <code>${LOG_LEVEL}</code> with <code>"2"</code>, <code>${DRIVER_IMAGE}</code> with the driver image name etc.</li>
