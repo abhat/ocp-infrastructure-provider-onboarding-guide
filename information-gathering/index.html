@@ -62,6 +62,16 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Information Gathering</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#compute">Compute</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#storage">Storage</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#networking">Networking</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#security">Security</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#development-and-community">Development and Community</a>
+    </li>
     </ul>
                     </li>
                 </ul>
@@ -147,7 +157,52 @@
             <div class="section">
               
                 <h1 id="information-gathering">Information Gathering</h1>
-<p>TODO</p>
+<p>The following items will be needed to move forward smoothly in the onboarding process. Use the questions below to build an inventory of your existing capabilities or gaps. Red Hat will review these to help estimate the amount of work. </p>
+<h2 id="compute">Compute</h2>
+<ul>
+<li>Do you have a list and documentation of pre-configured instance types (e.g. <code>m4.2xlarge</code>) or are machines configured another way? </li>
+<li>What are the supported processor architectures and what do you wish to use with OpenShift?</li>
+<li>Do you have multiple instance types (e.g. compute, graphics, HPC, etc)? </li>
+<li>Can you organize machines into zones, regions, or other types of groups?</li>
+</ul>
+<p>Additionally, as a reference, you can review the <a href="https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/installing-bare-metal.html#installation-minimum-resource-requirements_installing-bare-metal">minimum hardware requirements</a> for OpenShift.</p>
+<h2 id="storage">Storage</h2>
+<ul>
+<li>What types of storage do you offer (e.g. block, object, filesystem, fast, budget, etc)?</li>
+<li>Do you have any storage performance benchmarks you can share? </li>
+<li>Do you support features like snapshots and disk expansion?</li>
+</ul>
+<h2 id="networking">Networking</h2>
+<ul>
+<li>Do you have a native load balancing solution? If so, does it meet the <a href="https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/installing-bare-metal.html#installation-load-balancing-user-infra_installing-bare-metal">requirements for OpenShift</a>?</li>
+<li>Do you have a IP Address Management solution? (e.g. DHCP and DNS)?<ul>
+<li>Do you support static IP assignment via DHCP? </li>
+</ul>
+</li>
+<li>Will you be able to support each of the <a href="https://docs.openshift.com/container-platform/latest/installing/installing_bare_metal/installing-bare-metal.html#installation-dns-user-infra_installing-bare-metal">DNS record types used by OpenShift</a>?</li>
+<li>Do you have features like VPC, subnets, and firewalls?</li>
+<li>Do you have disconnected, offline, or restricted network capabilities?</li>
+</ul>
+<h2 id="security">Security</h2>
+<ul>
+<li>Do you have an IDM or Authentication solution? If so, what standard does it follow (e.g. OAuth, OpenID, etc)?</li>
+<li>Does you have role based access controls (RBAC) available or another authorization solution?</li>
+<li>Do you have hardware security module (HSM) support?</li>
+</ul>
+<h2 id="development-and-community">Development and Community</h2>
+<ul>
+<li>Do you have API documentation and libraries for your infrastructure? Are there code examples?</li>
+<li>Is there a metadata service for your infrastructure? (e.g. <code>169.254.169.254</code>)</li>
+<li>Are there any existing Kubernetes interface implementations? For example:<ul>
+<li><a href="https://kubernetes-csi.github.io/docs/">Container Storage Interface (CSI)</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/">Container Networking Interface (CNI)</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/administer-cluster/developing-cloud-controller-manager/">Cloud Controller Manager (CCM)</a></li>
+<li><a href="https://cluster-api.sigs.k8s.io/introduction.html">Cluster API (CAPI) Provider</a></li>
+</ul>
+</li>
+<li>The OpenShift installer relies on Terraform to provision resources. Do you have a Terraform provider?</li>
+<li>Do you have support for <a href="https://docs.fedoraproject.org/en-US/fedora-coreos/platforms/">Fedora CoreOS</a>, <a href="https://coreos.github.io/ignition/">Ignition</a>, and <a href="https://coreos.github.io/afterburn/">Afterburn</a>?</li>
+</ul>
               
             </div>
           </div>
