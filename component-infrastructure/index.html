@@ -98,6 +98,8 @@
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Component Infrastructure</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#image-registry">Image Registry</a>
+    </li>
     </ul>
                     </li>
                 </ul>
@@ -147,7 +149,37 @@
             <div class="section">
               
                 <h1 id="component-infrastructure">Component Infrastructure</h1>
-<p>TODO</p>
+<p>Some components are not strictly required for an OpenShift installation, but
+their integration will improve user's experiences when operating OpenShift on
+an infrastructure provider.</p>
+<h2 id="image-registry">Image Registry</h2>
+<p>OpenShift contains a component named the <a href="https://github.com/openshift/cluster-image-registry-operator">Image Registry Operator</a>
+which is responsible for managing a singleton instance of the OpenShift registry.
+This operator will manage a container image registry for the OpenShift cluster
+which will provide persistent storage for ImageStreams, built images (from Builds
+and BuildConfigs), and intermediate images produced during build processes.</p>
+<p>By default, the operator will deploy an image registry that is supported by local,
+ephemeral, storage. This means that if the node containing the registy is
+rebooted, then the cached images will be lost.  This configuration is not
+supported by Red Hat and is only added as default on new platforms to aid with
+building the platform. It must be changed before the new platform will be
+considered complete for general availability.</p>
+<p>Infrastructure providers can improve performance for their users by integrating
+an infrastructure specific storage configuration for the image registry
+operator. With proper integration to a storage service, images will be
+available in a persistent local storage. If the new infrastructure platform
+will not provide the storage for the image registry, then this component
+must be removed by default.</p>
+<p>For more information on how the image registry operator works, including
+instructions for development, please see the <a href="https://github.com/openshift/cluster-image-registry-operator/tree/master/docs">project documentation</a>.</p>
+<p>For more information on how the integrated registry works in OpenShift, please
+see the <a href="https://docs.openshift.com/container-platform/latest/registry/index.html">OpenShift product documentation</a>.</p>
+<p>To see examples of previous infrastructure integrations with the image registry
+operator, please see the follow pull requests:</p>
+<ul>
+<li><a href="https://github.com/openshift/cluster-image-registry-operator/pull/724">Support AlibabaCloud OSS for Image Registry</a></li>
+<li><a href="https://github.com/openshift/cluster-image-registry-operator/pull/698">Support IBmCloud and add IBM COS Storage Driver</a></li>
+</ul>
               
             </div>
           </div>
